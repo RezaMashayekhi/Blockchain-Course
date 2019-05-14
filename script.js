@@ -20,9 +20,9 @@ async function Trade(trade) {
   emit(event);
 }
 
-async function Offer(offer, isAccepted) {
+async function Offer(offer) {
   // eslint-disable-line no-unused-vars
-  if (isAccepted && offer.orderer.wallet.totalWallet >= offer.price) {
+  if (offer.orderer.wallet.totalWallet >= offer.price) {
     const oldOwner = offer.book.owner;
     offer.book.owner = offer.orderer;
     oldOwner.wallet.totalWallet += offer.price;
@@ -41,15 +41,6 @@ async function Offer(offer, isAccepted) {
     event.oldOwner = oldOwner;
     event.newOwner = offer.orderer;
     event.offerStatus = OfferStatus.DONE;
-    emit(event);
-  } else {
-    offer.status = OfferStatus.CANCELED;
-    let event = getFactory().newEvent(
-      "com.khazandegan.library",
-      "PlaceOfferEvent"
-    );
-    event.offerID = offer.offerID;
-    event.offerStatus = OfferStatus.CANCELED;
     emit(event);
   }
 }
