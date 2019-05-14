@@ -64,7 +64,7 @@ enum OfferStatus {
 
 transaction Offer {
 	o String offerID
-	o Book book
+	--> Book book
 	o Double price
 	o Double fee
 	--> Person owner
@@ -77,7 +77,7 @@ event PlaceOfferEvent {
 
 transaction MakeOffer {
 	o String makeOfferID
-	o Book book
+	--> Book book
 	o Offer offer
 	--> Person buyer
 }
