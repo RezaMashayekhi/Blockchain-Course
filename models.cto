@@ -76,6 +76,7 @@ event PlaceOfferEvent {
 	o Book book
   o Person oldOwner
   o Person newOwner
+  o OfferStatus offerStatus
 }
 
 transaction MakeOffer {

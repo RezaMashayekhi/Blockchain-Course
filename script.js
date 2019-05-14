@@ -40,6 +40,16 @@ async function Offer(offer, isAccepted) {
     event.book = offer.book;
     event.oldOwner = oldOwner;
     event.newOwner = offer.orderer;
+    event.offerStatus = OfferStatus.DONE;
+    emit(event);
+  } else {
+    offer.status = OfferStatus.CANCELED;
+    let event = getFactory().newEvent(
+      "com.khazandegan.library",
+      "PlaceOfferEvent"
+    );
+    event.offerID = offer.offerID;
+    event.offerStatus = OfferStatus.CANCELED;
     emit(event);
   }
 }
