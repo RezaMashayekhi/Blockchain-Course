@@ -68,6 +68,7 @@ transaction Offer {
 	o Double price
 	o Double fee
 	--> Person owner
+        o OfferStatus status
 }
 
 event PlaceOfferEvent {
