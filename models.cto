@@ -1,0 +1,88 @@
+namespace com.khazandegan.library
+
+asset Book identified by bookID {
+ o String bookID
+ o String name
+ o String author
+ o String publisher
+ o Integer ISBN
+ --> Person owner
+}
+
+asset Credit identified by creditID {
+ o String creditID
+ o Double totalWallet
+ --> Person owner
+}
+
+/* TODO: 
+[ADD] Credit 
+*/
+
+/* participants */
+
+participant Person identified by userID {
+ o String userID
+ o String name  optional
+ o ContactDetails contactDetail optional
+ --> Credit wallet
+}
+
+concept ContactDetails {
+ o String email optional
+ o String mobilePhone optional
+}
+
+/* txn and events */
+
+enum TradeStatus {
+	o PENDING
+	o DELIVERED
+	o REJECTED
+}
+
+transaction Trade {
+	o String orderID
+	--> Book book
+	o TradeStatus tradeStatus
+	--> Person orderer
+}
+
+event PlaceTradeEvent {
+	o String orderID
+	o Book book
+	o Person oldOwner
+	o Person newOwner
+}
+
+enum OfferStatus {
+	o OPEN
+	o CANCELED
+	o PENDING
+	o DONE
+}
+
+transaction Offer {
+	o String offerID
+	o Book book
+	o Double price
+	o Double fee
+	--> Person owner
+}
+
+event PlaceOfferEvent {
+	o String offerID
+	o Book book
+}
+
+transaction MakeOffer {
+	o String makeOfferID
+	o Book book
+	o Offer offer
+	--> Person buyer
+}
+
+event PlaceMakeOfferEvent {
+	o String makeOfferID
+	o Book book
+}

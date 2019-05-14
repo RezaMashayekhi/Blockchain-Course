@@ -1,0 +1,15 @@
+query Books {
+	description: "Select all books of one person"
+	statement:
+		SELECT com.khazandegan.library.Book WHERE 
+			(owner==_$owner)	
+}
+/*
+query BookOwners {
+	description: "Select all owners of a book"
+	statement:
+		SELECT com.khazandegan.library.Person WHERE 
+			Person.id IN (SELECT Book.person_id from com.khazandegan.library.Book 
+								WHERE Book.ISBN==_$isbn)
+}	
+*/
