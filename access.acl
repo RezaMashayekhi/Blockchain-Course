@@ -17,7 +17,7 @@ rule EverybodyCanSubmitTransactions {
 rule EverybodyCanUpdateBook {
     description: "Allow all participants to submit transactions"
     participant: "com.khazandegan.library.Person"
-    operation: CREATE
+    operation: UPDATE
     resource: "com.khazandegan.library.Book"
     action: ALLOW
 }
