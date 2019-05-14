@@ -16,10 +16,12 @@ rule EverybodyCanSubmitTransactions {
 
 rule EverybodyCanUpdateBook {
     description: "Allow all participants to submit transactions"
-    participant: "com.khazandegan.library.Person"
+    participant(t): "com.khazandegan.library.Person"
     operation: UPDATE
-    resource: "com.khazandegan.library.Book"
+    resource(v): "com.khazandegan.library.Book"
+    condition: (v.owner.userID == t.userID)
     action: ALLOW
+
 }
 
 rule SystemACL {
