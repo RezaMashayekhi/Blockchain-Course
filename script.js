@@ -22,7 +22,7 @@ async function Trade(trade) {
 
 async function Offer(offer, isAccepted) {
   // eslint-disable-line no-unused-vars
-  if (isAccepted) {
+  if (isAccepted && offer.orderer.wallet.totalWallet >= offer.price) {
     const oldOwner = offer.book.owner;
     offer.book.owner = offer.orderer;
     oldOwner.wallet.totalWallet += offer.price;
