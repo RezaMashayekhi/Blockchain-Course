@@ -74,6 +74,8 @@ transaction Offer {
 event PlaceOfferEvent {
 	o String offerID
 	o Book book
+  o Person oldOwner
+  o Person newOwner
 }
 
 transaction MakeOffer {
