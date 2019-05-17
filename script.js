@@ -44,3 +44,59 @@ async function Offer(offer) {
     emit(event);
   }
 }
+
+/**
+ * Bid on a book in auction
+ * @param {com.khazandegan.library.Bid} bid - the bid to be processed
+ * @transaction
+ */
+async function Bid(bid) {
+	if (bid.price>bid.auction.lastBid && bid.auction.status==AuctionStatus.OPEN){
+	  const lastBidder=bid.auction.bidder;
+      lastBidder.credit+=bid.auction.lastBid;
+      bid.auction.lastBid=bid.price;
+      bid.auction.bidder=bid.bidder;
+      bid.auction.bidder.credit-=bid.price;
+	  const assetRegistry = await getAssetRegistry(
+      "com.khazandegan.library.Auction"
+    );
+    await assetRegistry.update(bid.auction);
+	let event = getFactory().newEvent(
+      "com.khazandegan.library",
+      "BidUpEvent"
+    );
+    event.bidID = bid.bidID;
+    event.auction = bid.auction;
+    event.lastBidder = lastBidder;
+    event.newBidder = bid.auction.bidder;
+    emit(event);
+    }
+	
+}
+
+async function AuctionOff(auctionoff) {
+	if (auctionoff.auction.status==AuctionStatus.OPEN){
+	  const oldOwner=auctionoff.auction.book.owner;
+      oldOwner.credit+=auctionoff.auction.lastBid;
+      auctionoff.auction.book.owner=auctionoff.auction.bidder;
+	  auctionoff.auction.status=AuctionStatus.DONE;
+	  const assetRegistry1 = await getAssetRegistry(
+      "com.khazandegan.library.Book"
+    );
+    await assetRegistry1.update(auctionoff.auction.book);
+	  const assetRegistry2 = await getAssetRegistry(
+      "com.khazandegan.library.Auction"
+    );
+    await assetRegistry2.update(auctionoff.auction);
+	let event = getFactory().newEvent(
+      "com.khazandegan.library",
+      "AuctionOffEvent"
+    );
+    event.auctionoffID = auctionoff.auctionoffID;
+    event.auction = auctionoff.auction;
+    event.oldOwner = oldOwner;
+    event.newOwner = auctionoff.auction.book.owner;
+    emit(event);
+    }
+	
+}

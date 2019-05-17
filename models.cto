@@ -9,6 +9,15 @@ asset Book identified by bookID {
  --> Person owner
 }
 
+asset Auction identified by AuctionID {
+ o String AuctionID
+ o Double lastBid
+ o AuctionStatus status
+ --> Book book
+ --> Person bidder
+ 
+ 
+}
 
 
 /* participants */
@@ -81,4 +90,37 @@ transaction MakeOffer {
 event PlaceMakeOfferEvent {
 	o String makeOfferID
 	o Book book
+}
+
+transaction Bid {
+	o String bidID
+	--> Auction auction
+	o Double price
+	--> Person bidder
+
+}
+
+event BidUpEvent {
+	o String bidID
+	o Auction auction
+  o Person lastBidder
+  o Person newBidder
+}
+
+transaction AuctionOff {
+	o String auctionOffID
+	--> Auction auction
+}
+
+event AuctionOffEvent {
+	o String auctionOffID
+	o Auction auction
+  o Person oldOwner
+  o Person newOwner
+}
+
+enum AuctionStatus {
+	o OPEN
+	o CANCELED
+	o DONE
 }
