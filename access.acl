@@ -24,6 +24,26 @@ rule EverybodyCanUpdateBook {
 
 }
 
+rule EverybodyCanAddBook {
+    description: "Allow all participants to add their books"
+    participant(t): "com.khazandegan.library.Person"
+    operation: CREATE
+    resource(v): "com.khazandegan.library.Book"
+    condition: (v.owner.userID == t.userID)
+    action: ALLOW
+
+}
+
+rule EverybodyCanDeleteOwnedBook {
+    description: "Allow all participants to delete their books"
+    participant(t): "com.khazandegan.library.Person"
+    operation: DELETE
+    resource(v): "com.khazandegan.library.Book"
+    condition: (v.owner.userID == t.userID)
+    action: ALLOW
+
+}
+
 rule SystemACL {
     description: "System ACL to permit all access"
     participant: "org.hyperledger.composer.system.Participant"
