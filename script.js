@@ -22,11 +22,11 @@ async function Trade(trade) {
 
 async function Offer(offer) {
   // eslint-disable-line no-unused-vars
-  if (offer.orderer.wallet.totalWallet >= offer.price) {
+  if (offer.orderer.credit >= offer.price) {
     const oldOwner = offer.book.owner;
     offer.book.owner = offer.orderer;
-    oldOwner.wallet.totalWallet += offer.price;
-    offer.orderer.wallet.totalWallet -= offer.price;
+    oldOwner.credit += offer.price;
+    offer.orderer.credit -= offer.price;
     offer.status = OfferStatus.DONE;
     const assetRegistry = await getAssetRegistry(
       "com.khazandegan.library.Book"

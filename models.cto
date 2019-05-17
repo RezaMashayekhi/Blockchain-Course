@@ -9,15 +9,7 @@ asset Book identified by bookID {
  --> Person owner
 }
 
-asset Credit identified by creditID {
- o String creditID
- o Double totalWallet
- --> Person owner
-}
 
-/* TODO: 
-[ADD] Credit 
-*/
 
 /* participants */
 
@@ -25,7 +17,7 @@ participant Person identified by userID {
  o String userID
  o String name  optional
  o ContactDetails contactDetail optional
- --> Credit wallet
+ o Double credit
 }
 
 concept ContactDetails {
