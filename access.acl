@@ -60,7 +60,7 @@ rule EverybodyCanBid {
     participant(t): "com.khazandegan.library.Person"
     operation: CREATE
     resource(v): "com.khazandegan.library.Bid"
-    condition: (v.bidder.getIdentifier() == t.getIdentifier() && t.credit>=v.price>=v.auction.lastBid && v.auction.status=="OPEN")
+    condition: (v.bidder.getIdentifier() == t.getIdentifier() && t.credit>=v.price && v.price>v.auction.lastBid && v.auction.status=="OPEN")
     action: ALLOW
 
 }
@@ -71,11 +71,53 @@ rule EverybodyCanUpdateAuctionThroughBid {
     operation: UPDATE
     resource(v): "com.khazandegan.library.Auction"
     transaction(tx): "com.khazandegan.library.Bid"
-    condition: (tx.bidder.userID == t.userID && t.credit>=tx.price>=tx.auction.lastBid && tx.auction.status=="OPEN")
+    condition: (tx.bidder.userID == t.userID && t.credit>=tx.price && tx.price>=tx.auction.lastBid && tx.auction.status=="OPEN")
     action: ALLOW
 
 }
 
+rule EverybodyCanUpdateCreditThroughBid {
+    description: "Allow all participants to update credit through bid"
+    participant(t): "com.khazandegan.library.Person"
+    operation: UPDATE
+    resource(v): "com.khazandegan.library.Person"
+    transaction(tx): "com.khazandegan.library.Bid"
+    condition: (tx.bidder.userID == t.userID && t.credit>=tx.price && tx.price>=tx.auction.lastBid && tx.auction.status=="OPEN")
+    action: ALLOW
+
+}
+
+rule BookOwnerCanEndAuction {
+    description: "Allow book owner to end auction"
+    participant(t): "com.khazandegan.library.Person"
+    operation: CREATE
+    resource(v): "com.khazandegan.library.AuctionOff"
+    condition: (v.auction.book.owner.getIdentifier() == t.getIdentifier())
+    action: ALLOW
+
+}
+
+rule BookOwnerCanUpdateAuctionThroughAuctionOff {
+    description: "Allow book owner to update auction through auctionoff"
+    participant(t): "com.khazandegan.library.Person"
+    operation: UPDATE
+    resource(v): "com.khazandegan.library.Auction"
+    transaction(tx): "com.khazandegan.library.AuctionOff"
+    condition: (tx.auction.book.owner.getIdentifier() == t.getIdentifier())
+    action: ALLOW
+
+}
+
+rule BookOwnerCanUpdateCreditThroughAuctionOff {
+    description: "Allow book owner to update credit through auctionoff"
+    participant(t): "com.khazandegan.library.Person"
+    operation: UPDATE
+    resource(v): "com.khazandegan.library.Person"
+    transaction(tx): "com.khazandegan.library.AuctionOff"
+    condition: (tx.auction.book.owner.getIdentifier() == t.getIdentifier())
+    action: ALLOW
+
+}
 
 rule SystemACL {
     description: "System ACL to permit all access"

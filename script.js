@@ -61,6 +61,14 @@ async function Bid(bid) {
       "com.khazandegan.library.Auction"
     );
     await assetRegistry.update(bid.auction);
+	  const participantRegistry = await getParticipantRegistry(
+      "com.khazandegan.library.Person"
+    );
+    await participantRegistry.update(bid.bidder);
+	  const participantRegistry2 = await getParticipantRegistry(
+      "com.khazandegan.library.Person"
+    );
+    await participantRegistry2.update(lastBidder);
 	let event = getFactory().newEvent(
       "com.khazandegan.library",
       "BidUpEvent"
@@ -80,11 +88,11 @@ async function Bid(bid) {
  * @transaction
  */
 async function AuctionOff(auctionoff) {
-	if (auctionoff.auction.status==AuctionStatus.OPEN){
+	if (auctionoff.auction.status=="OPEN"){
 	  const oldOwner=auctionoff.auction.book.owner;
       oldOwner.credit+=auctionoff.auction.lastBid;
       auctionoff.auction.book.owner=auctionoff.auction.bidder;
-	  auctionoff.auction.status=AuctionStatus.DONE;
+	  auctionoff.auction.status="DONE";
 	  const assetRegistry1 = await getAssetRegistry(
       "com.khazandegan.library.Book"
     );
@@ -93,11 +101,15 @@ async function AuctionOff(auctionoff) {
       "com.khazandegan.library.Auction"
     );
     await assetRegistry2.update(auctionoff.auction);
+	  const participantRegistry = await getParticipantRegistry(
+      "com.khazandegan.library.Person"
+    );
+    await participantRegistry.update(oldOwner);
 	let event = getFactory().newEvent(
       "com.khazandegan.library",
       "AuctionOffEvent"
     );
-    event.auctionoffID = auctionoff.auctionoffID;
+    event.auctionOffID = auctionoff.auctionOffID;
     event.auction = auctionoff.auction;
     event.oldOwner = oldOwner;
     event.newOwner = auctionoff.auction.book.owner;
