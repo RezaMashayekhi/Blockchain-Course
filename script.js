@@ -51,7 +51,7 @@ async function Offer(offer) {
  * @transaction
  */
 async function Bid(bid) {
-	if (bid.price>bid.auction.lastBid && bid.auction.status==AuctionStatus.OPEN){
+	if (bid.price>bid.auction.lastBid){
 	  const lastBidder=bid.auction.bidder;
       lastBidder.credit+=bid.auction.lastBid;
       bid.auction.lastBid=bid.price;
@@ -74,6 +74,11 @@ async function Bid(bid) {
 	
 }
 
+/**
+ * End auction
+ * @param {com.khazandegan.library.AuctionOff} auctionoff - the auction to be processed
+ * @transaction
+ */
 async function AuctionOff(auctionoff) {
 	if (auctionoff.auction.status==AuctionStatus.OPEN){
 	  const oldOwner=auctionoff.auction.book.owner;

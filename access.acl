@@ -1,10 +1,4 @@
-rule EverybodyCanReadEverything {
-    description: "Allow all participants read access to all resources"
-    participant: "com.khazandegan.library.Person"
-    operation: READ
-    resource: "com.khazandegan.library.*"
-    action: ALLOW
-}
+
 rule EverybodyCanReadEverything {
     description: "Allow all participants read access to all resources"
     participant: "com.khazandegan.library.Person"
@@ -66,81 +60,22 @@ rule EverybodyCanBid {
     participant(t): "com.khazandegan.library.Person"
     operation: CREATE
     resource(v): "com.khazandegan.library.Bid"
-    condition: (v.bidder.userID == t.userID && t.credit>=v.price>=v.auction.lastBid && v.auction.status=="OPEN")
+    condition: (v.bidder.getIdentifier() == t.getIdentifier() && t.credit>=v.price>=v.auction.lastBid && v.auction.status=="OPEN")
     action: ALLOW
 
 }
 
-rule SystemACL {
-    description: "System ACL to permit all access"
-    participant: "org.hyperledger.composer.system.Participant"
-    operation: ALL
-    resource: "org.hyperledger.composer.system.**"
-    action: ALLOW
-}
-
-rule NetworkAdminUser {
-    description: "Grant business network administrators full access to user resources"
-    participant: "org.hyperledger.composer.system.NetworkAdmin"
-    operation: ALL
-    resource: "**"
-    action: ALLOW
-}
-
-rule NetworkAdminSystem {
-    description: "Grant business network administrators full access to system resources"
-    participant: "org.hyperledger.composer.system.NetworkAdmin"
-    operation: ALL
-    resource: "org.hyperledger.composer.system.**"
-    action: ALLOW
-}
-rule EverybodyCanSubmitTransactions {
-    description: "Allow all participants to submit transactions"
-    participant: "com.khazandegan.library.Person"
-    operation: CREATE
-    resource: "com.khazandegan.library.Trade"
-    action: ALLOW
-}
-
-rule EverybodyCanUpdateBook {
-    description: "Allow all participants to submit transactions"
+rule EverybodyCanUpdateAuctionThroughBid {
+    description: "Allow all participants to update auction through bid"
     participant(t): "com.khazandegan.library.Person"
     operation: UPDATE
-    resource(v): "com.khazandegan.library.Book"
-    condition: (v.owner.userID == t.userID)
-    action: ALLOW
-
-}
-
-rule EverybodyCanAddBook {
-    description: "Allow all participants to add their books"
-    participant(t): "com.khazandegan.library.Person"
-    operation: CREATE
-    resource(v): "com.khazandegan.library.Book"
-    condition: (v.owner.userID == t.userID)
-    action: ALLOW
-
-}
-
-rule EverybodyCanDeleteOwnedBook {
-    description: "Allow all participants to delete their books"
-    participant(t): "com.khazandegan.library.Person"
-    operation: DELETE
-    resource(v): "com.khazandegan.library.Book"
-    condition: (v.owner.userID == t.userID)
-    action: ALLOW
-
-}
-
-rule EverybodyCanStartAuction {
-    description: "Allow all participants to add start auction"
-    participant(t): "com.khazandegan.library.Person"
-    operation: CREATE
     resource(v): "com.khazandegan.library.Auction"
-    condition: (v.book.owner.userID == t.userID && v.lastBid==0 && v.status=="OPEN" && v.bidder.userID==t.userID)
+    transaction(tx): "com.khazandegan.library.Bid"
+    condition: (tx.bidder.userID == t.userID && t.credit>=tx.price>=tx.auction.lastBid && tx.auction.status=="OPEN")
     action: ALLOW
 
 }
+
 
 rule SystemACL {
     description: "System ACL to permit all access"

@@ -36,6 +36,12 @@ concept ContactDetails {
 
 /* txn and events */
 
+enum AuctionStatus {
+	o OPEN
+	o CANCELED
+	o DONE
+}
+
 enum TradeStatus {
 	o PENDING
 	o DELIVERED
@@ -94,8 +100,8 @@ event PlaceMakeOfferEvent {
 
 transaction Bid {
 	o String bidID
-	--> Auction auction
 	o Double price
+	--> Auction auction
 	--> Person bidder
 
 }
@@ -117,10 +123,4 @@ event AuctionOffEvent {
 	o Auction auction
   o Person oldOwner
   o Person newOwner
-}
-
-enum AuctionStatus {
-	o OPEN
-	o CANCELED
-	o DONE
 }
