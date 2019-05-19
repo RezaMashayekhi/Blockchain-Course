@@ -35,6 +35,14 @@ async function AcceptOffer(offer) {
       "com.khazandegan.library.Book"
     );
     await assetRegistry.update(offer.book);
+    const participantRegistryOwner = await getParticipantRegistry(
+      "com.khazandegan.library.Person"
+    );
+    await participantRegistryOwner.update(oldOwner);
+    const participantRegistryOrderer = await getParticipantRegistry(
+      "com.khazandegan.library.Person"
+    );
+    await participantRegistryOrderer.update(offer.orderer);
     let event = getFactory().newEvent(
       "com.khazandegan.library",
       "PlaceOfferEvent"
