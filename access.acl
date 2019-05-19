@@ -142,3 +142,14 @@ rule NetworkAdminSystem {
     resource: "org.hyperledger.composer.system.**"
     action: ALLOW
 }
+
+rule EverybodyCanUpdateCreditThroughAcceptOffer {
+    description: "Allow all participants to update credit through accepting offers"
+    participant(t): "com.khazandegan.library.Person"
+    operation: UPDATE
+    resource(v): "com.khazandegan.library.Person"
+    transaction(tx): "com.khazandegan.library.AcceptOffer"
+    action: ALLOW
+
+}
+
