@@ -69,7 +69,7 @@ enum OfferStatus {
 	o DONE
 }
 
-asset Offer {
+asset Offer identified by offerID {
 	o String offerID
 	--> Book book
 	o Double price
