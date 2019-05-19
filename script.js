@@ -24,7 +24,8 @@ async function Trade(trade) {
  * @param {com.khazandegan.library.Offer} offer - the offer to be processed
  * @transaction
  */
-async function AcceptOffer(offer) {
+async function AcceptOffer(acceptOffer) {
+  offer = acceptOffer.offer;
   if (offer.orderer.credit >= offer.price) {
     const oldOwner = offer.book.owner;
     offer.book.owner = offer.orderer;
@@ -60,7 +61,8 @@ async function AcceptOffer(offer) {
  * @param {com.khazandegan.library.Offer} offer - the offer to be processed
  * @transaction
  */
-async function RejectOffer(offer) {
+async function RejectOffer(rejectOffer) {
+    offer = rejectOffer.offer;
     const oldOwner = offer.book.owner;
     offer.status = "CANCELED";
     const assetRegistry = await getAssetRegistry(

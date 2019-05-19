@@ -69,12 +69,22 @@ enum OfferStatus {
 	o DONE
 }
 
-transaction Offer {
+asset Offer {
 	o String offerID
 	--> Book book
 	o Double price
 	--> Person orderer
     o OfferStatus status
+}
+
+transaction AcceptOffer {
+	o String acceptOfferID
+	--> Offer offer
+}
+
+transaction RejectOffer {
+	o String rejectofferID
+	--> Offer offer
 }
 
 event PlaceOfferEvent {

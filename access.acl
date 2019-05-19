@@ -143,8 +143,8 @@ rule NetworkAdminSystem {
     action: ALLOW
 }
 
-rule EverybodyCanUpdateCreditThroughAcceptOffer {
-    description: "Allow all participants to update credit through accepting offers"
+rule BookOwnerCanUpdateCreditThroughAcceptOffer {
+    description: "Allow book owner participant to update credit through accepting offers"
     participant(t): "com.khazandegan.library.Person"
     operation: UPDATE
     resource(v): "com.khazandegan.library.Person"
@@ -157,7 +157,7 @@ rule BookOwnerCanAcceptOffer {
     description: "Allow book owner participant to accept offer"
     participant(t): "com.khazandegan.library.Person"
     operation: CREATE
-    resource(v): "com.khazandegan.library.AcceptOffer"
+    resource(v): "com.khazandegan.library.Offer"
     condition: (v.book.owner.getIdentifier() == t.getIdentifier() && v.orderer.credit >= v.price && v.status == "OPEN")
     action: ALLOW
 
@@ -167,7 +167,7 @@ rule BookOwnerCanRejectOffer {
     description: "Allow book owner participant to reject offer"
     participant(t): "com.khazandegan.library.Person"
     operation: CREATE
-    resource(v): "com.khazandegan.library.RejectOffer"
+    resource(v): "com.khazandegan.library.Offer"
     condition: (v.book.owner.getIdentifier() == t.getIdentifier() && v.status=="OPEN")
     action: ALLOW
 
