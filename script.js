@@ -21,7 +21,7 @@ async function Trade(trade) {
 }
 /**
  * Send an offer for a book
- * @param {com.khazandegan.library.Offer} offer - the offer to be processed
+ * @param {com.khazandegan.library.AcceptOffer} acceptOffer - the offer to be processed
  * @transaction
  */
 async function AcceptOffer(acceptOffer) {
@@ -36,6 +36,10 @@ async function AcceptOffer(acceptOffer) {
       "com.khazandegan.library.Book"
     );
     await assetRegistry.update(offer.book);
+	const assetRegistry2 = await getAssetRegistry(
+      "com.khazandegan.library.Offer"
+    );
+    await assetRegistry2.update(offer);
     const participantRegistryOwner = await getParticipantRegistry(
       "com.khazandegan.library.Person"
     );
@@ -58,28 +62,24 @@ async function AcceptOffer(acceptOffer) {
 }
 /**
  * reject an offer for a book
- * @param {com.khazandegan.library.Offer} offer - the offer to be processed
+ * @param {com.khazandegan.library.RejectOffer} rejectOffer - the offer to be processed
  * @transaction
  */
 async function RejectOffer(rejectOffer) {
     offer = rejectOffer.offer;
-    const oldOwner = offer.book.owner;
     offer.status = "CANCELED";
     const assetRegistry = await getAssetRegistry(
-      "com.khazandegan.library.Book"
+      "com.khazandegan.library.Offer"
     );
-    await assetRegistry.update(offer.book);
+    await assetRegistry.update(offer);
     let event = getFactory().newEvent(
       "com.khazandegan.library",
-      "PlaceOfferEvent"
+      "RejectOfferEvent"
     );
     event.offerID = offer.offerID;
-    event.book = offer.book;
-    event.oldOwner = oldOwner;
-    event.newOwner = offer.orderer;
     event.offerStatus = "CANCELED";
     emit(event);
-  }
+  
 }
 
 

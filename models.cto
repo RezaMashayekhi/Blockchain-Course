@@ -95,6 +95,11 @@ event PlaceOfferEvent {
   o OfferStatus offerStatus
 }
 
+event RejectOfferEvent {
+	o String offerID
+  o OfferStatus offerStatus
+}
+
 
 transaction Bid {
 	o String bidID

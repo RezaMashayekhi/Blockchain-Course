@@ -158,8 +158,19 @@ rule BookOwnerCanAcceptOffer {
     description: "Allow book owner participant to accept offer"
     participant(t): "com.khazandegan.library.Person"
     operation: CREATE
+    resource(v): "com.khazandegan.library.AcceptOffer"
+    condition: (v.offer.book.owner.getIdentifier() == t.getIdentifier() && v.offer.orderer.credit >= v.offer.price && v.offer.status == "OPEN")
+    action: ALLOW
+
+}
+
+rule BookOwnerCanUpdateOfferThroughAcceptOffer {
+    description: "Allow book owner participant to update offer from accept offer"
+    participant(t): "com.khazandegan.library.Person"
+    operation: UPDATE
     resource(v): "com.khazandegan.library.Offer"
-    condition: (v.book.owner.getIdentifier() == t.getIdentifier() && v.orderer.credit >= v.price && v.status == "OPEN")
+	transaction(tx): "com.khazandegan.library.AcceptOffer"
+    condition: (true)
     action: ALLOW
 
 }
@@ -168,8 +179,29 @@ rule BookOwnerCanRejectOffer {
     description: "Allow book owner participant to reject offer"
     participant(t): "com.khazandegan.library.Person"
     operation: CREATE
+    resource(v): "com.khazandegan.library.RejectOffer"
+    condition: (v.offer.book.owner.getIdentifier() == t.getIdentifier() && v.offer.status=="OPEN")
+    action: ALLOW
+
+}
+
+rule BookOwnerCanUpdateOfferThroughRejectOffer {
+    description: "Allow book owner participant to update offer from reject offer"
+    participant(t): "com.khazandegan.library.Person"
+    operation: UPDATE
     resource(v): "com.khazandegan.library.Offer"
-    condition: (v.book.owner.getIdentifier() == t.getIdentifier() && v.status=="OPEN")
+	transaction(tx): "com.khazandegan.library.RejectOffer"
+    condition: (v.status=="OPEN")
+    action: ALLOW
+
+}
+
+rule EverybodyCanMakeOffer {
+    description: "Allow all participants to add make offer"
+    participant(t): "com.khazandegan.library.Person"
+    operation: CREATE
+    resource(v): "com.khazandegan.library.Offer"
+    condition: (v.orderer.getIdentifier() == t.getIdentifier() && v.status=="OPEN" && v.price<=t.credit)
     action: ALLOW
 
 }
