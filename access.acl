@@ -149,6 +149,7 @@ rule BookOwnerCanUpdateCreditThroughAcceptOffer {
     operation: UPDATE
     resource(v): "com.khazandegan.library.Person"
     transaction(tx): "com.khazandegan.library.AcceptOffer"
+    condition: (true)
     action: ALLOW
 
 }
