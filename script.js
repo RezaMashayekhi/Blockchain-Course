@@ -19,15 +19,18 @@ async function Trade(trade) {
   event.newOwner = trade.orderer;
   emit(event);
 }
-
-async function Offer(offer) {
-  // eslint-disable-line no-unused-vars
+/**
+ * Send an offer for a book
+ * @param {com.khazandegan.library.Offer} offer - the offer to be processed
+ * @transaction
+ */
+async function AcceptOffer(offer) {
   if (offer.orderer.credit >= offer.price) {
     const oldOwner = offer.book.owner;
     offer.book.owner = offer.orderer;
     oldOwner.credit += offer.price;
     offer.orderer.credit -= offer.price;
-    offer.status = OfferStatus.DONE;
+    offer.status = "DONE";
     const assetRegistry = await getAssetRegistry(
       "com.khazandegan.library.Book"
     );
@@ -40,10 +43,35 @@ async function Offer(offer) {
     event.book = offer.book;
     event.oldOwner = oldOwner;
     event.newOwner = offer.orderer;
-    event.offerStatus = OfferStatus.DONE;
+    event.offerStatus = "DONE";
     emit(event);
   }
 }
+/**
+ * reject an offer for a book
+ * @param {com.khazandegan.library.Offer} offer - the offer to be processed
+ * @transaction
+ */
+async function RejectOffer(offer) {
+    const oldOwner = offer.book.owner;
+    offer.status = "CANCELED";
+    const assetRegistry = await getAssetRegistry(
+      "com.khazandegan.library.Book"
+    );
+    await assetRegistry.update(offer.book);
+    let event = getFactory().newEvent(
+      "com.khazandegan.library",
+      "PlaceOfferEvent"
+    );
+    event.offerID = offer.offerID;
+    event.book = offer.book;
+    event.oldOwner = oldOwner;
+    event.newOwner = offer.orderer;
+    event.offerStatus = "CANCELED";
+    emit(event);
+  }
+}
+
 
 /**
  * Bid on a book in auction

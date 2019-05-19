@@ -73,9 +73,8 @@ transaction Offer {
 	o String offerID
 	--> Book book
 	o Double price
-	o Double fee
-	--> Person owner
-        o OfferStatus status
+	--> Person orderer
+    o OfferStatus status
 }
 
 event PlaceOfferEvent {
@@ -86,17 +85,6 @@ event PlaceOfferEvent {
   o OfferStatus offerStatus
 }
 
-transaction MakeOffer {
-	o String makeOfferID
-	--> Book book
-	o Offer offer
-	--> Person buyer
-}
-
-event PlaceMakeOfferEvent {
-	o String makeOfferID
-	o Book book
-}
 
 transaction Bid {
 	o String bidID
