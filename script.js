@@ -25,10 +25,17 @@ async function Trade(trade) {
  * @transaction
  */
 async function AcceptOffer(acceptOffer) {
-  offer = acceptOffer.offer;
+  offer = acceptOffer.offer; 
   if (offer.orderer.credit >= offer.price) {
     const oldOwner = offer.book.owner;
     offer.book.owner = offer.orderer;
+    
+    ooldOwner=null;
+    if(offer.obook != null){
+      ooldOwner = offer.orderer;
+   	  offer.obook.owner = oldOwner;
+    }
+    
     oldOwner.credit += offer.price;
     offer.orderer.credit -= offer.price;
     offer.status = "DONE";
@@ -40,6 +47,12 @@ async function AcceptOffer(acceptOffer) {
       "com.khazandegan.library.Offer"
     );
     await assetRegistry2.update(offer);
+    
+    const assetRegistry3 = await getAssetRegistry(
+      "com.khazandegan.library.Book"
+    );
+    await assetRegistry3.update(offer.obook);
+
     const participantRegistryOwner = await getParticipantRegistry(
       "com.khazandegan.library.Person"
     );
@@ -54,8 +67,11 @@ async function AcceptOffer(acceptOffer) {
     );
     event.offerID = offer.offerID;
     event.book = offer.book;
+    event.obook= offer.obook;
     event.oldOwner = oldOwner;
     event.newOwner = offer.orderer;
+    event.ooldOwner = ooldOwner;
+    event.onewOwner = oldOwner;
     event.offerStatus = "DONE";
     emit(event);
   }
@@ -91,10 +107,10 @@ async function RejectOffer(rejectOffer) {
 async function Bid(bid) {
 	if (bid.price>bid.auction.lastBid){
 	  const lastBidder=bid.auction.bidder;
-      lastBidder.credit+=bid.auction.lastBid;
-      bid.auction.lastBid=bid.price;
-      bid.auction.bidder=bid.bidder;
-      bid.auction.bidder.credit-=bid.price;
+    lastBidder.credit+=bid.auction.lastBid;
+    bid.auction.lastBid=bid.price;
+    bid.auction.bidder=bid.bidder;
+    bid.auction.bidder.credit-=bid.price;
 	  const assetRegistry = await getAssetRegistry(
       "com.khazandegan.library.Auction"
     );

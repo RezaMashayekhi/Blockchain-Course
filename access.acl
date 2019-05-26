@@ -154,6 +154,16 @@ rule BookOwnerCanUpdateCreditThroughAcceptOffer {
 
 }
 
+rule ordererCanUpdateBookThroughAcceptOffer {
+    description: "Allow book owner participant to update credit through accepting offers"
+    participant(t): "com.khazandegan.library.Person"
+    operation: UPDATE
+    resource(v): "com.khazandegan.library.Book"
+    transaction(tx): "com.khazandegan.library.AcceptOffer"
+    condition: (tx.offer.obook.owner.id==t.id)
+    action: ALLOW
+}
+
 rule BookOwnerCanAcceptOffer {
     description: "Allow book owner participant to accept offer"
     participant(t): "com.khazandegan.library.Person"
@@ -174,6 +184,7 @@ rule BookOwnerCanUpdateOfferThroughAcceptOffer {
     action: ALLOW
 
 }
+
 
 rule BookOwnerCanRejectOffer {
     description: "Allow book owner participant to reject offer"
