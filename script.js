@@ -107,10 +107,10 @@ async function RejectOffer(rejectOffer) {
 async function Bid(bid) {
 	if (bid.price>bid.auction.lastBid){
 	  const lastBidder=bid.auction.bidder;
-      lastBidder.credit+=bid.auction.lastBid;
-      bid.auction.lastBid=bid.price;
-      bid.auction.bidder=bid.bidder;
-      bid.auction.bidder.credit-=bid.price;
+    lastBidder.credit+=bid.auction.lastBid;
+    bid.auction.lastBid=bid.price;
+    bid.auction.bidder=bid.bidder;
+    bid.auction.bidder.credit-=bid.price;
 	  const assetRegistry = await getAssetRegistry(
       "com.khazandegan.library.Auction"
     );
