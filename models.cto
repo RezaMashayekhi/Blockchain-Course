@@ -73,6 +73,7 @@ asset Offer identified by offerID {
 	o String offerID
 	--> Book book
 	o Double price
+    --> Book obook
 	--> Person orderer
     o OfferStatus status
 }
@@ -90,8 +91,11 @@ transaction RejectOffer {
 event PlaceOfferEvent {
 	o String offerID
 	o Book book
+    o Book obook
   o Person oldOwner
   o Person newOwner
+  o Person ooldOwner
+  o Person onewOwner
   o OfferStatus offerStatus
 }
 
