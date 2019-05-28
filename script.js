@@ -3,7 +3,7 @@
  * @param {com.khazandegan.library.Trade} trade - the trade to be processed
  * @transaction
  */
-async function Trade(trade) {
+async function TradeFunc(trade) {
   // eslint-disable-line no-unused-vars
   const oldOwner = trade.book.owner;
   trade.book.owner = trade.orderer;
@@ -24,7 +24,7 @@ async function Trade(trade) {
  * @param {com.khazandegan.library.AcceptOffer} acceptOffer - the offer to be processed
  * @transaction
  */
-async function AcceptOffer(acceptOffer) {
+async function AcceptOfferFunc(acceptOffer) {
   offer = acceptOffer.offer; 
   if (offer.orderer.credit >= offer.price) {
     const oldOwner = offer.book.owner;
@@ -81,7 +81,7 @@ async function AcceptOffer(acceptOffer) {
  * @param {com.khazandegan.library.RejectOffer} rejectOffer - the offer to be processed
  * @transaction
  */
-async function RejectOffer(rejectOffer) {
+async function RejectOfferFunc(rejectOffer) {
     offer = rejectOffer.offer;
     offer.status = "CANCELED";
     const assetRegistry = await getAssetRegistry(
@@ -104,7 +104,7 @@ async function RejectOffer(rejectOffer) {
  * @param {com.khazandegan.library.Bid} bid - the bid to be processed
  * @transaction
  */
-async function Bid(bid) {
+async function BidFunc(bid) {
 	if (bid.price>bid.auction.lastBid){
 	  const lastBidder=bid.auction.bidder;
     lastBidder.credit+=bid.auction.lastBid;
@@ -141,7 +141,7 @@ async function Bid(bid) {
  * @param {com.khazandegan.library.AuctionOff} auctionoff - the auction to be processed
  * @transaction
  */
-async function AuctionOff(auctionoff) {
+async function AuctionOffFunc(auctionoff) {
 	if (auctionoff.auction.status=="OPEN"){
 	  const oldOwner=auctionoff.auction.book.owner;
       oldOwner.credit+=auctionoff.auction.lastBid;
