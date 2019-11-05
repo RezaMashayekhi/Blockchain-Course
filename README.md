@@ -1,2 +1,2 @@
 # khazandegan-exchange
-A book exchange app based on blockchain (final project in blockchain course)
+a book exchange app built with Hyperledger Composer as the final project of Blockchain course
